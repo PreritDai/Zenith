@@ -7,7 +7,7 @@ public class Tokens {
     public String name;
     public TokenTypes type;
 
-    Tokens(String name, TokenTypes type){
+    public Tokens(String name, TokenTypes type){
         this.name=name;
         this.type=type;
     }

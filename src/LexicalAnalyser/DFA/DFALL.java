@@ -2,7 +2,6 @@ package LexicalAnalyser.DFA;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import LexicalAnalyser.Constants.TokenTypes;
 import LexicalAnalyser.Constants.States;
 
@@ -70,6 +69,7 @@ public class DFALL {
         tokenSymbol.put("(", TokenTypes.LARPEN);
         tokenSymbol.put(")", TokenTypes.PARPEN);
         tokenSymbol.put("if", TokenTypes.IF);
+        tokenSymbol.put("isequalto", TokenTypes.ISEQUALTO);
 
     }
 

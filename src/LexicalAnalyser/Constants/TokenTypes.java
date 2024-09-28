@@ -12,5 +12,6 @@ public enum TokenTypes {
     PARPEN,
     WHILE,
     DATA,
-    QUOTATION
+    QUOTATION,
+    ISEQUALTO
 }
