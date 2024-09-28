@@ -4,8 +4,8 @@ package LexicalAnalyser.DFA;
 import LexicalAnalyser.Constants.TokenTypes;
 
 public class Tokens {
-    String name;
-    TokenTypes type;
+    public String name;
+    public TokenTypes type;
 
     Tokens(String name, TokenTypes type){
         this.name=name;

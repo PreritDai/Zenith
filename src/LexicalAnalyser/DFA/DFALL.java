@@ -2,54 +2,57 @@ package LexicalAnalyser.DFA;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import LexicalAnalyser.Constants.TokenTypes;
 import LexicalAnalyser.Constants.States;
 
 
 /*
-DFALL=Deterministic Finite AutoMata Linked List
-It is an implementation of Deterministic Finite Automata Model through LL
+    DFALL=Deterministic Finite AutoMata Linked List
+    It is an implementation of Deterministic Finite Automata Model through LL
  */
 
-public class DFALL{
+public class DFALL {
+
     //Basic concept of Linked List
-    State head=null;
-    State current=null;
-    static State state=null;
+    State head = null;
+    State current = null;
+    static State state = null;
 
     //There are three states, two quotations and one initial. In quotations state all text will be considered one token
-    States currentState= States.INITIAL;
+    public static States currentState = States.INITIAL;
+
 
     /*
     extraTokens stores intermediate Token
     for example id x=10
     while this line is being tokenized lets say our DFA reaches a point where it is about to add x into a list of tokens
-    if i add = simultaneously in that list
+    if I add = simultaneously in that list
     my = will appear before x
     which might be conflicting so a new variable is created to store such intermediate tokens which cannot be stored currently
      */
-    Tokens extraTokens=null;
+    Tokens extraTokens = null;
 
-    static int flag=1;//flag=1 means that the current part we are working on is not a token
+    static int flag = 1;//flag=1 means that the current part we are working on is not a token
 
     /*
     Stores the list of special symbols. Whenever DFA encounters any special symbol, it treats everything it has encountered till now
     as a token
      */
-    public static ArrayList<Character> specialSymbols=new ArrayList<>();
+    public static ArrayList<Character> specialSymbols = new ArrayList<>();
 
     /*
     It has been initialised to reduce manual work to writing if else statement to identify the type of token
      */
-    public static HashMap<String, TokenTypes> tokenSymbol=new HashMap<>();
+    public static HashMap<String, TokenTypes> tokenSymbol = new HashMap<>();
 
 
     /*
     It stores the list of tokens
      */
-    private static ArrayList<Tokens> tokens=new ArrayList<>();
+    private static final ArrayList<Tokens> tokens = new ArrayList<>();
 
-    DFALL(){
+    public DFALL() {
         specialSymbols.add(' ');
         specialSymbols.add('<');
         specialSymbols.add('>');
@@ -70,28 +73,29 @@ public class DFALL{
 
     }
 
-    public static class State{
+    public static class State {
         State next_state;
         char data;
 
-        State(char data){
-            this.data=data;
-            this.next_state=null;
-            if (specialSymbols.contains(data)){
-                flag=0;
+        State(char data) {
+            this.data = data;
+            this.next_state = null;
+            if (specialSymbols.contains(data)) {
+                flag = 0;
             }
+
         }
     }
 
-    public void addNewState(char data){
-        if (head==null){
-            state=new State(data);
-            head=state;
-            current=head;
-        }else{
-             state=new State(data);
-             current.next_state=state;
-             current=state;
+    public void addNewState(char data) {
+        if (head == null) {
+            state = new State(data);
+            head = state;
+            current = head;
+        } else {
+            state = new State(data);
+            current.next_state = state;
+            current = state;
         }
 
         /*
@@ -101,60 +105,53 @@ public class DFALL{
         id name = 10
         here after we have id we encounter a space, and so we have a new token called as id
          */
-        if (flag==0){
+        if (flag == 0) {
             String rawToken;
             //We donot require the last word in case of a space
-            if (data==' '){
-                rawToken=getLL(false);
-            } else if (data=='='){
-                rawToken=getLL(false);
-                extraTokens=new Tokens("=", TokenTypes.ASSIGNMENT);
-            }
-            else if (data=='"') {
+            if (data == ' ') {
+                rawToken = getLL(false);
+            } else if (data == '=') {
+                rawToken = getLL(false);
+                extraTokens = new Tokens("=", TokenTypes.ASSIGNMENT);
+            } else if (data == '"') {
                 rawToken = getLL(false);
                 extraTokens = new Tokens(String.valueOf('"'), TokenTypes.QUOTATION);
-            }
-            else{
-                rawToken=getLL(true);
+            } else {
+                rawToken = getLL(true);
             }
 
             //Clearing the old linked list
-            head=null;
-            current=head;
+            head = null;
+            current = null;
             Tokens finalToken;
 
 
             //If it contains it is not a variable
-            if (tokenSymbol.containsKey(rawToken)==true){
-                finalToken=new Tokens(rawToken, tokenSymbol.get(rawToken));
-
-            }else{
-                //It is a variable
-                finalToken=new Tokens(rawToken, TokenTypes.IDENTIFIER);
-            }
-            if (rawToken.length()>=1){
+            //It is a variable
+            finalToken = new Tokens(rawToken, tokenSymbol.getOrDefault(rawToken, TokenTypes.IDENTIFIER));
+            if (!rawToken.isEmpty()) {
                 tokens.add(finalToken);
             }
 
-            if(extraTokens!=null){
+            if (extraTokens != null) {
                 tokens.add(extraTokens);
-                extraTokens=null;
+                extraTokens = null;
             }
-            flag=1;
+            flag = 1;
         }
         /*
         The current state can only be set to variable by the Main class
         If it is set to the state variable , we will now force assign the token as the value of an Variable(Data)
         Its data type in the symbol table will be looked later
          */
-        if(currentState==States.VARIABLE){
-            currentState=States.INITIAL;
-            String rawToken=getLL(true);
-            if (rawToken.length()>0) {
+        if (currentState == States.VARIABLE) {
+            currentState = States.INITIAL;
+            String rawToken = getLL(true);
+            if (!rawToken.isEmpty()) {
                 Tokens finalToken = new Tokens(rawToken, TokenTypes.DATA);
                 tokens.add(finalToken);
                 head = null;
-                current = head;
+                current = null;
             }
         }
     }
@@ -167,24 +164,24 @@ public class DFALL{
     if flag=true and data=int" it will return int"
     if flag=false and data=int" it will return int
      */
-    public String getLL(boolean flag){
-        current=head;
-        String data="";
-        if (flag==true){
-            while(current!=null){
-                data+=current.data;
-                current=current.next_state;
+    public String getLL(boolean flag) {
+        current = head;
+        StringBuilder data = new StringBuilder();
+        if (flag) {
+            while (current != null) {
+                data.append(current.data);
+                current = current.next_state;
             }
-        }else{
-            while(current.next_state!=null){
-                data+=current.data;
-                current=current.next_state;
+        } else {
+            while (current.next_state != null) {
+                data.append(current.data);
+                current = current.next_state;
             }
         }
-        return data;
+        return data.toString();
     }
 
-    public ArrayList<Tokens> getTokens(){
+    public ArrayList<Tokens> getTokens() {
         return tokens;
     }
 }
