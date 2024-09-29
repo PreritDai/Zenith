@@ -5,4 +5,7 @@ public enum States {
     VARIABLE,
     STARTINGQUOTATION,
     ENDINGQUOTATION,
+    FORWARDSLASH, // It means '/'
+    BACKWARDSLASH, // It means '\'
+    ASTERISK
 }

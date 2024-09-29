@@ -1,9 +1,11 @@
 package LexicalAnalyser.DFA;
 
+import Common.SymbolTable;
+import LexicalAnalyser.Constants.States;
+import LexicalAnalyser.Constants.TokenTypes;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import LexicalAnalyser.Constants.TokenTypes;
-import LexicalAnalyser.Constants.States;
 
 
 /*
@@ -13,14 +15,13 @@ import LexicalAnalyser.Constants.States;
 
 public class DFALL {
 
-    //Basic concept of Linked List
+    // Basic concept of Linked List
     State head = null;
     State current = null;
     static State state = null;
 
-    //There are three states, two quotations and one initial. In quotations state all text will be considered one token
+    // There are three states, two quotations and one initial. In quotations state all text will be considered one token
     public static States currentState = States.INITIAL;
-
 
     /*
     extraTokens stores intermediate Token
@@ -32,7 +33,7 @@ public class DFALL {
      */
     Tokens extraTokens = null;
 
-    static int flag = 1;//flag=1 means that the current part we are working on is not a token
+    static int flag = 1;// flag=1 means that the current part we are working on is not a token
 
     /*
     Stores the list of special symbols. Whenever DFA encounters any special symbol, it treats everything it has encountered till now
@@ -107,7 +108,7 @@ public class DFALL {
          */
         if (flag == 0) {
             String rawToken;
-            //We donot require the last word in case of a space
+            // We donot require the last word in case of a space
             if (data == ' ') {
                 rawToken = getLL(false);
             } else if (data == '=') {
@@ -120,15 +121,13 @@ public class DFALL {
                 rawToken = getLL(true);
             }
 
-            //Clearing the old linked list
+            // Clearing the old linked list
             head = null;
             current = null;
             Tokens finalToken;
 
-
-            //If it contains it is not a variable
-            //It is a variable
             finalToken = new Tokens(rawToken, tokenSymbol.getOrDefault(rawToken, TokenTypes.IDENTIFIER));
+
             if (!rawToken.isEmpty()) {
                 tokens.add(finalToken);
             }
